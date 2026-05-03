@@ -1,0 +1,23 @@
+name: Tests
+
+on: [ push, pull_request ]
+
+jobs:
+  unit-benchmark-test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      repository-projects: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: stable
+
+      - name: Unit Test
+        run: go test -race -covermode=atomic -coverprofile=coverage.out ./...
+
+      - name: Benchmark
+        run: go test -bench=. -benchmem -run=none ./...
