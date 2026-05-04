@@ -30,6 +30,7 @@ import (
 	"github.com/cloudwego/eino/schema"
 
 	examplemodel "github.com/cloudwego/eino-examples/adk/common/model"
+	"github.com/cloudwego/eino-examples/config"
 )
 
 func main() {
@@ -38,7 +39,12 @@ func main() {
 	flag.Parse()
 
 	ctx := context.Background()
-	cm := examplemodel.NewChatModel()
+	c := config.InitConfig("../../config.yaml")
+	cm, err := examplemodel.NewClaudeModel(ctx, c)
+	if err != nil {
+		_, _ = fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
+	}
 
 	agent, err := adk.NewChatModelAgent(ctx, &adk.ChatModelAgentConfig{
 		Name:        "Ch02ChatModelAgent",

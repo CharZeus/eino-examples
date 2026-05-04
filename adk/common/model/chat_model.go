@@ -25,11 +25,14 @@ import (
 	"time"
 
 	"github.com/cloudwego/eino-ext/components/model/ark"
+	"github.com/cloudwego/eino-ext/components/model/claude"
 	"github.com/cloudwego/eino-ext/components/model/openai"
 	"github.com/cloudwego/eino/callbacks"
 	"github.com/cloudwego/eino/components/model"
 	cbutils "github.com/cloudwego/eino/utils/callbacks"
 	arkModel "github.com/volcengine/volcengine-go-sdk/service/arkruntime/model"
+
+	"github.com/cloudwego/eino-examples/config"
 )
 
 func NewChatModel() model.ToolCallingChatModel {
@@ -65,6 +68,34 @@ func NewChatModel() model.ToolCallingChatModel {
 		log.Fatalf("openai.NewChatModel failed: %v", err)
 	}
 	return cm
+}
+
+func NewClaudeModel(ctx context.Context, c *config.Config) (model.ToolCallingChatModel, error) {
+	return claude.NewChatModel(ctx, &claude.Config{
+		//ByBedrock:               false,
+		//AccessKey:               "",
+		//SecretAccessKey:         "",
+		//SessionToken:            "",
+		//Profile:                 "",
+		//Region:                  "",
+		//ByVertex:                false,
+		//VertexProjectID:         "",
+		//VertexRegion:            "",
+		BaseURL: &c.Claude.BaseURL,
+		//APIKey:    "",
+		AuthToken: c.Claude.AuthToken,
+		Model:     c.Claude.Model,
+		MaxTokens: c.Claude.MaxTokens,
+		//Temperature:             nil,
+		//TopP:                    nil,
+		//TopK:                    nil,
+		//StopSequences:           nil,
+		//Thinking:                nil,
+		//HTTPClient:              nil,
+		//DisableParallelToolUse:  nil,
+		//AdditionalHeaderFields:  nil,
+		//AdditionalRequestFields: nil,
+	})
 }
 
 func GetInputLoggerCallback() callbacks.Handler {

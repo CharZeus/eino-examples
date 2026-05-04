@@ -29,9 +29,13 @@ import (
 	"github.com/cloudwego/eino-ext/components/model/openai"
 	"github.com/cloudwego/eino/components/model"
 	"github.com/cloudwego/eino/schema"
+
+	examplemodel "github.com/cloudwego/eino-examples/adk/common/model"
+	"github.com/cloudwego/eino-examples/config"
 )
 
 func main() {
+	c := config.InitConfig("../../config.yaml")
 	var instruction string
 	flag.StringVar(&instruction, "instruction", "You are a helpful assistant.", "")
 	flag.Parse()
@@ -43,7 +47,7 @@ func main() {
 	}
 
 	ctx := context.Background()
-	cm, err := newChatModel(ctx)
+	cm, err := examplemodel.NewClaudeModel(ctx, c)
 	if err != nil {
 		_, _ = fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
