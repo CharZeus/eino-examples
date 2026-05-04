@@ -29,14 +29,15 @@ import (
 	"path/filepath"
 	"strings"
 
+	localbk "github.com/cloudwego/eino-ext/adk/backend/local"
 	"github.com/google/uuid"
 
-	localbk "github.com/cloudwego/eino-ext/adk/backend/local"
 	"github.com/cloudwego/eino/adk"
 	"github.com/cloudwego/eino/adk/prebuilt/deep"
 	"github.com/cloudwego/eino/schema"
 
 	examplemodel "github.com/cloudwego/eino-examples/adk/common/model"
+	"github.com/cloudwego/eino-examples/config"
 	"github.com/cloudwego/eino-examples/quickstart/chatwitheino/mem"
 )
 
@@ -48,7 +49,12 @@ func main() {
 	flag.Parse()
 
 	ctx := context.Background()
-	cm := examplemodel.NewChatModel()
+	c := config.InitConfig("../../config.yaml")
+	cm, err := examplemodel.NewClaudeModel(ctx, c)
+	if err != nil {
+		_, _ = fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
+	}
 
 	projectRoot := os.Getenv("PROJECT_ROOT")
 	if projectRoot == "" {
@@ -79,6 +85,7 @@ Always use absolute paths when calling filesystem tools.`, projectRoot, projectR
 	}
 
 	backend, err := localbk.NewBackend(ctx, &localbk.Config{})
+	//backend, err := NewBackend(ctx, &Config{})
 	if err != nil {
 		_, _ = fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
